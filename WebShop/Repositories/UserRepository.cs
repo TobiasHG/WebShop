@@ -13,7 +13,34 @@ namespace WebShop.Repositories
             _connectionString = connectionString;
         }
 
-        // Create
+        public User? GetByEmail(string email)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = "SELECT Id, Email, PasswordHash FROM Users WHERE Email = @Email";
+
+                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Email", email);
+
+                connection.Open();
+
+                using (NpgsqlDataReader reader = command.ExecuteReader())
+                {
+                    if (!reader.Read())
+                    {
+                        return null;
+                    }
+
+                    return new User
+                    {
+                        Id = reader.GetInt32(0),
+                        Email = reader.GetString(1),
+                        PasswordHash = reader.GetString(2)
+                    };
+                }
+            }
+        }
+
         public void Add(User user)
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))

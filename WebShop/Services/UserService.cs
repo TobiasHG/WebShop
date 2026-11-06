@@ -22,7 +22,24 @@ namespace WebShop.Services
                 Email = email,
             };
 
+            newUser.PasswordHash = _passwordHasher.HashPassword(newUser, password);
+
             _userRepository.Add(newUser);
+        }
+
+        public User? Login(string email, string password)
+        {
+            User? user = _userRepository.GetByEmail(email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            PasswordVerificationResult result =
+                _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+            return result == PasswordVerificationResult.Failed ? null : user;
         }
     }
 }

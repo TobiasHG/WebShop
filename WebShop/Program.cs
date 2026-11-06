@@ -13,6 +13,12 @@ namespace WebShop
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = "/Auth/Login";
+                });
+
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             Console.WriteLine($"Using connection string: {connectionString}");
 
@@ -33,6 +39,7 @@ namespace WebShop
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
