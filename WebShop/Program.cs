@@ -1,3 +1,7 @@
+using WebShop.Database;
+using WebShop.Repositories;
+using WebShop.Services;
+
 namespace WebShop
 {
     public class Program
@@ -9,25 +13,30 @@ namespace WebShop
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            Console.WriteLine($"Using connection string: {connectionString}");
+
+            builder.Services.AddScoped(_ => new UserRepository(connectionString));
+            builder.Services.AddScoped<UserService>();
+
             var app = builder.Build();
+
+            DatabaseSetup databaseSetup = new DatabaseSetup(connectionString);
+            databaseSetup.CreateTables();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.MapStaticAssets();
-            app.MapRazorPages()
-               .WithStaticAssets();
+            app.MapRazorPages().WithStaticAssets();
 
             app.Run();
         }
