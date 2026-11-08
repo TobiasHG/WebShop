@@ -10,10 +10,8 @@ namespace WebShop
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddRazorPages();
 
-            // HSTS: 2 år, alle subdomæner og preload
             builder.Services.AddHsts(options =>
             {
                 options.MaxAge = TimeSpan.FromSeconds(63072000);
@@ -30,8 +28,31 @@ namespace WebShop
                     options.Cookie.SameSite = SameSiteMode.Lax;
                 });
 
+            var DB_HOST = Environment.GetEnvironmentVariable("DB_HOST");
+            var DB_PORT = Environment.GetEnvironmentVariable("DB_PORT");
+            var DB_NAME = Environment.GetEnvironmentVariable("DB_NAME");
+            var DB_USER = Environment.GetEnvironmentVariable("DB_USER");
+            var DB_PASSWORD = Environment.GetEnvironmentVariable("DB_PASSWORD");
+            var DB_SSLMODE = Environment.GetEnvironmentVariable("DB_SSLMODE");
+
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine($"Using connection string: {connectionString}");
+
+            if (!string.IsNullOrEmpty(DB_HOST) && !string.IsNullOrEmpty(DB_PORT) && !string.IsNullOrEmpty(DB_NAME) && !string.IsNullOrEmpty(DB_USER) && !string.IsNullOrEmpty(DB_PASSWORD))
+            {
+
+                var npgsqlBuilder = new Npgsql.NpgsqlConnectionStringBuilder
+                {
+                    Host = DB_HOST,
+                    Port = int.Parse(DB_PORT),
+                    Database = DB_NAME,
+                    Username = DB_USER,
+                    Password = DB_PASSWORD,
+                    SslMode = Enum.Parse<Npgsql.SslMode>(DB_SSLMODE, true)
+                };
+
+                connectionString = npgsqlBuilder.ConnectionString;
+
+            }
 
             builder.Services.AddScoped(_ => new UserRepository(connectionString));
             builder.Services.AddScoped<UserService>();
