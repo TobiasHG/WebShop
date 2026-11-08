@@ -1,0 +1,28 @@
+﻿@page
+@model WebShop.Pages.Order.IndexModel
+@{
+}
+
+@using System.Globalization
+@{
+    CultureInfo da = new CultureInfo("da-DK");
+}
+
+@foreach (var order in Model.Orders)
+{
+    <div style="border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <p><strong>Ordre #@order.Id</strong></p>
+
+        @foreach (var item in order.OrderItems)
+        {
+            <div style="border-bottom: 1px solid #eee; padding: 8px 0;">
+                <p>Product: @Model.ProductIdToName[item.ProductId]</p>
+                <p>Antal: @item.Quantity</p>
+                <p>Enhedspris: @item.UnitPrice.ToString("C", da)</p>
+            </div>
+        }
+
+        <p>Dato: @order.OrderDate.ToString("dd/MM/yyyy")</p>
+        <p><strong>Totalbeløb: @order.TotalAmount.ToString("C", da)</strong></p>
+    </div>
+}

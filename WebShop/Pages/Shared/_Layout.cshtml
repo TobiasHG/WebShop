@@ -21,11 +21,39 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Products/Index">Produkter</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
+
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Order/Index">Order Historik</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Cart/Index">Gå til kurv</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <p class="nav-link text-dark">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</p>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-page="/Auth/logout">
+                                    <button type="submit" class="nav-link btn btn-link text-dark">Log ud</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Auth/login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Auth/register">Register</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

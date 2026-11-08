@@ -1,0 +1,16 @@
+﻿@page
+@model WebShop.Pages.Products.UpdateModel
+@{
+}
+
+<form method="post">
+
+    <input name="id" type="hidden" asp-for="Product.Id" />
+    <input name="name" type="text" asp-for="Product.Name" />
+    <input name="description" type="text" asp-for="Product.Description" />
+    <input name="price" step="0.01" type="number" asp-for="Product.Price" />
+    <input name="stock" step="1" type="number" asp-for="Product.Stock" />
+    <input name="imageurl" type="text" asp-for="Product.ImageUrl" />
+
+    <button type="submit">Opdater Produkt</button>
+</form>

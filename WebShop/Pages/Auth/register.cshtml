@@ -9,10 +9,21 @@
     <label for="email">Email:</label>
     <br />
     <input name="email" type="text"/>
+    @if (TempData["EmailError"] is string EmailError)
+    {
+        <p style="color:red">@EmailError</p>
+    }
     <br /><br />
     <label for="password">Password:</label>
     <br />
     <input name="password" type="password"/>
+    @if (TempData["PasswordError"] is string PasswordError)
+    {
+        foreach (var error in PasswordError.Split(". ", StringSplitOptions.RemoveEmptyEntries))
+        {
+            <p style="color:red">@error.</p>
+        }
+    }
 
     <br /><br />
     <button type="submit">Register</button>

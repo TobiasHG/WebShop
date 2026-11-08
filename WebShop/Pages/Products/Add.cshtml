@@ -1,0 +1,13 @@
+﻿@page
+@model WebShop.Pages.Products.AddModel
+@{
+}
+
+<form method="post">
+    <input type="text" name="Name" placeholder="Product Name" required />
+    <input type="text" name="Description" placeholder="Product Description" required />
+    <input type="number" name="Price" placeholder="Product Price" step="0.01" required />
+    <input type="number" name="Stock" placeholder="Product Stock" required />
+    <input type="text" name="ImageUrl" placeholder="Product Image URL" required />
+    <button type="submit">Add Product</button>
+</form>

@@ -1,0 +1,48 @@
+﻿@page
+@model WebShop.Pages.Cart.IndexModel
+@{
+}
+
+<h1>Din indkøbskurv</h1>
+
+@if (Model.CartItemProducts.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Pris</th>
+                <th>Antal</th>
+                <th>Billede</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItemProducts)
+            {
+                <tr style="border: 1px solid black;">
+                    <td>@item.ProductName</td>
+                    <td>@item.ProductPrice kr.</td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        <img src="@item.ProductImage"
+                             alt="@item.ProductName"
+                             width="100" />
+                    </td>
+                    <td>@(item.ProductPrice * item.Quantity) kr.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>
+        Total:
+        @Model.CartItemProducts.Sum(item => item.ProductPrice * item.Quantity) kr.
+    </h3>
+}
+else
+{
+    <p>Din indkøbskurv er tom.</p>
+}
+
+<a asp-page="/Order/Add">Gennemfør betaling</a>

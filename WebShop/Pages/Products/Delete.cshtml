@@ -1,0 +1,18 @@
+﻿@page
+@model WebShop.Pages.Products.DeleteModel
+@{
+}
+
+<h1>Du er ved at slette @Model.Product.Name</h1>
+
+<form method="post">
+    <input name="ProductId" type="hidden" asp-for="Product.Id" />
+    <p>Er du sikker på, at du vil slette dette produkt?</p>
+    <p>Skriv <b> @Model.Product.Name </b> i feltet for at slette.</p>
+    @if (TempData["Error"] is string error)
+    {
+        <p style="color:red">@error</p>
+    }
+    <input name="ProductName" type="text" asp-for="ProductName" />
+    <button type="submit">Slet</button>
+</form>

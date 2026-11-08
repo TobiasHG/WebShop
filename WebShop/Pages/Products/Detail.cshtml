@@ -1,0 +1,39 @@
+﻿@page
+@model WebShop.Pages.Products.DetailModel
+@{
+}
+
+@if(Model.Product is null)
+{
+    <h1>404: Produktet findes ikke.</h1>
+}
+else
+{
+    <div>
+    <h1> @Model.Product.Name</h1>
+    <img src="@Model.Product.ImageUrl" alt="@Model.Product.Name" width="100" />
+    <p> @Model.Product.Description</p>
+    <p>Pris: @Model.Product.Price</p>
+    <p>Lager: @Model.Product.Stock</p>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <form method="post" asp-page="/Cart/Add">
+                <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+                <label for="quantity">Antal:</label>
+                <input type="number" name="Quantity" value="1" min="1" max="@Model.Product.Stock" />
+                <button type="submit">Tilføj til Kurv</button>
+        </form>
+
+        <a asp-page="/Products/Update" asp-route-id="@Model.Product.Id">Rediger Produkt</a>
+        <a asp-page="/Products/Delete" asp-route-id="@Model.Product.Id">Slet Produkt</a>
+    }
+    else
+    {
+        <p>Du skal være logget ind for at tilføje produkter til kurven.</p>
+    }
+
+
+</div>
+}
+

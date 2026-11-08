@@ -1,0 +1,40 @@
+﻿@page
+@model WebShop.Pages.Products.ListModel
+@{
+}
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <a asp-page="./Add">Tilføj Product</a>
+}
+
+<form method="get">
+    <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Søg efter produkter..." />
+    <button type="submit">Søg</button>
+</form>
+
+<table>
+    <header>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Image</th>
+            <th>Link</th>
+        </tr>
+    </header>
+    <tbody>
+        @foreach (var product in Model.Products)
+        {
+            <tr style="border: 1px solid black;">
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td>@product.Stock</td>
+                <td><img src="@product.ImageUrl" alt="@product.Name" width="100" /></td> 
+                <td><a asp-page="./Detail" asp-route-id="@product.Id">Læs mere</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

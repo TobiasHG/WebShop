@@ -1,0 +1,83 @@
+﻿@page
+@model WebShop.Pages.Order.AddModel
+@{
+}
+
+<h1>Gennemfør ordre</h1>
+
+<form method="post">
+    <h2>Kontaktoplysninger</h2>
+
+    <label for="fullName">Fulde navn</label>
+    <br />
+    <input type="text" id="fullName" name="fullName" autocomplete="name" required />
+    <br /><br />
+
+    <label for="email">E-mail</label>
+    <br />
+    <input type="email" id="email" name="email" autocomplete="email" required />
+    <br /><br />
+
+    <label for="phone">Telefonnummer</label>
+    <br />
+    <input type="tel" id="phone" name="phone" autocomplete="tel" />
+    <br /><br />
+
+    <h2>Leveringsadresse</h2>
+
+    <label for="address">Adresse</label>
+    <br />
+    <input type="text" id="address" name="address" autocomplete="street-address" required />
+    <br /><br />
+
+    <label for="zipCode">Postnummer</label>
+    <br />
+    <input type="text" id="zipCode" name="zipCode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="postal-code" required />
+    <br /><br />
+
+    <label for="city">By</label>
+    <br />
+    <input type="text" id="city" name="city" autocomplete="address-level2" required />
+    <br /><br />
+
+    <label for="country">Land</label>
+    <select id="country" name="country" autocomplete="country">
+        <option value="DK" selected>Danmark</option>
+    </select>
+    <br /><br />
+
+    <h2>Betaling</h2>
+
+    <label for="cardName">Kortholders navn</label>
+    <br />
+    <input type="text" id="cardName" name="cardName" autocomplete="cc-name" required />
+    <br /><br />
+
+    <label for="cardNumber">Kortnummer</label>
+    <br />
+    <input type="text" id="cardNumber" name="cardNumber" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" autocomplete="cc-number" required />
+    <br /><br />
+
+    <label for="cardExpiry">Udløbsdato</label>
+    <br />
+    <input type="text" id="cardExpiry" name="cardExpiry" maxlength="5" placeholder="MM/ÅÅ" autocomplete="cc-exp" required />
+    <br /><br />
+
+    <label for="cardCvc">CVC</label>
+    <br />
+    <input type="text" id="cardCvc" name="cardCvc" inputmode="numeric" maxlength="3" placeholder="123" autocomplete="cc-csc" required />
+    <br /><br />
+
+    <h2>Andet</h2>
+
+    <label for="comment">Kommentar til ordren</label>
+    <br />
+    <textarea id="comment" name="comment" rows="3" cols="40"></textarea>
+    <br /><br />
+
+    <input type="checkbox" id="terms" name="Terms" value="true" required />
+    <label for="terms">Jeg accepterer handelsbetingelserne</label>
+    <br /><br />
+
+    <input type="submit" value="Betal" />
+</form>
