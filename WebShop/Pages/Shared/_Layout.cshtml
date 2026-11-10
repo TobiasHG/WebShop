@@ -42,6 +42,18 @@
                                     <a class="nav-link text-dark" asp-page="/Cart/Index">Gå til kurv</a>
                                 </li>
                             }
+                            @if ((await Authorization.AuthorizeAsync(User, Permissions.CanManipulateProducts)).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark"
+                                       href="https://betterstack.com"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+                                        Logs – Better Stack
+                                    </a>
+                                </li>
+                            }
+                            
 
                             <li class="nav-item">
                                 <p class="nav-link text-dark">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</p>
