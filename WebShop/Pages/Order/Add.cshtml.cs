@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ using WebShop.Services;
 
 namespace WebShop.Pages.Order
 {
+    [Authorize(Policy = Permissions.CanPlaceOrder)]
     public class AddModel : PageModel
     {
         private readonly OrderService _orderService;
@@ -59,7 +61,6 @@ namespace WebShop.Pages.Order
         public void OnGet()
         {
         }
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid || !Terms)

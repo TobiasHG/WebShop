@@ -3,17 +3,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebShop.Models;
 using WebShop.Repositories;
 using WebShop.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 
 namespace WebShop.Pages.Auth
 {
     public class registerModel : PageModel
     {
+        private readonly ILogger<registerModel> _logger;
         private UserService _userService;
         private PassOMeterService _passOMeterService;
         private CartRepository _cartRepository;
-        public registerModel(UserService userService, PassOMeterService passOMeterService, CartRepository cartRepository)
+        public registerModel(ILogger<registerModel> logger, UserService userService, PassOMeterService passOMeterService, CartRepository cartRepository)
         {
+            _logger = logger;
             _userService = userService;
             _passOMeterService = passOMeterService;
             _cartRepository = cartRepository;
@@ -23,12 +26,20 @@ namespace WebShop.Pages.Auth
         }
 
         [BindProperty]
+        [Required(ErrorMessage = "Email er påkrævet.")]
         public string? Email { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "Adgangskode er påkrævet.")]
         public string Password { get; set; }
         public async Task<IActionResult> OnPost()
         {
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state for register attempt with email: {Email}", Email);
+                return Page();
+            }
 
             if (Email == null)
             {

@@ -5,14 +5,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebShop.Pages.Auth
 {
+    [Authorize]
     public class logoutModel : PageModel
     {
         public IActionResult OnGet()
         {
             return RedirectToPage("/Index");
         }
-
-        [Authorize]
         public async Task<IActionResult> OnPostAsync()
         {
             // TODO: put i user service

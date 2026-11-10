@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using WebShop.Database;
+using WebShop.Models;
 using WebShop.Repositories;
 using WebShop.Services;
 
@@ -10,7 +12,17 @@ namespace WebShop
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddAuthorization(options =>
+            {
+                foreach (string permission in Permissions.All)
+                {
+                    options.AddPolicy(permission, policy =>
+                        policy.RequireClaim("permission", permission));
+                }
+            });
+
             builder.Logging.ClearProviders();
+
             builder.Logging.AddJsonConsole(options =>
             {
                 options.IncludeScopes = true;
@@ -61,6 +73,12 @@ namespace WebShop
                 connectionString = npgsqlBuilder.ConnectionString;
 
             }
+            else if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("Database connection string is not configured.");
+            }
+
+            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
             builder.Services.AddScoped(_ => new UserRepository(connectionString));
             builder.Services.AddScoped<UserService>();
@@ -73,6 +91,9 @@ namespace WebShop
 
             builder.Services.AddScoped(_ => new OrderRepository(connectionString));
             builder.Services.AddScoped<OrderService>();
+
+            builder.Services.AddScoped(_ => new ResetPasswordRepository(connectionString));
+            builder.Services.AddScoped<ResetPasswordService>();
 
             builder.Services.AddScoped<PaymentService>();
 

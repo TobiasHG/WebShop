@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService Authorization
+@using WebShop.Models
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -28,17 +32,21 @@
                     <ul class="navbar-nav">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Order/Index">Order Historik</a>
-                            </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Cart/Index">Gå til kurv</a>
-                            </li>
+                            @if ((await Authorization.AuthorizeAsync(User, Permissions.CanPlaceOrder)).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Order/Index">Order Historik</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/Cart/Index">Gå til kurv</a>
+                                </li>
+                            }
 
                             <li class="nav-item">
                                 <p class="nav-link text-dark">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</p>
                             </li>
+
                             <li class="nav-item">
                                 <form method="post" asp-page="/Auth/logout">
                                     <button type="submit" class="nav-link btn btn-link text-dark">Log ud</button>

@@ -3,7 +3,12 @@
 @{
 }
 
-@if (User.Identity?.IsAuthenticated == true)
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService Authorization
+@using WebShop.Models
+
+
+@if ((await Authorization.AuthorizeAsync(User, Permissions.CanManipulateProducts)).Succeeded)
 {
     <a asp-page="./Add">Tilføj Product</a>
 }

@@ -8,7 +8,7 @@ using WebShop.Dtos;
 
 namespace WebShop.Pages.Cart
 {
-    [Authorize]
+    [Authorize(Policy = Permissions.CanPlaceOrder)]
     public class IndexModel : PageModel
     {
         private readonly CartService _cartService;

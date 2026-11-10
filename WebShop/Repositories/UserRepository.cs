@@ -48,16 +48,21 @@ namespace WebShop.Repositories
         {
             using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
             {
-                string query = "INSERT INTO Users (Email, PasswordHash) VALUES (@Email, @PasswordHash) RETURNING Id";
+                string query = @"
+                INSERT INTO Users (Email, PasswordHash, RoleId)
+                VALUES (@Email, @PasswordHash, @RoleId)
+                RETURNING Id";
 
-                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", user.Email);
+                    command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    command.Parameters.AddWithValue("@RoleId", user.RoleId);
 
-                command.Parameters.AddWithValue("@Email", user.Email);
-                command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+                    await connection.OpenAsync();
 
-                await connection.OpenAsync();
-
-                return (int)(await command.ExecuteScalarAsync())!;
+                    return (int)(await command.ExecuteScalarAsync())!;
+                }
             }
         }
 
@@ -85,6 +90,94 @@ namespace WebShop.Repositories
 
                 await command.ExecuteNonQueryAsync();
             }
+        }
+
+        public async Task UpdatePassword(int userId, string passwordHash)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = @"
+            UPDATE Users
+            SET PasswordHash = @PasswordHash
+            WHERE Id = @Id";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", userId);
+                    command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+
+                    await connection.OpenAsync();
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+        public async Task<User?> GetById(int id)
+        {
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = @"
+                SELECT Id, Email, PasswordHash, FailedLoginAttempts, LockoutUntil
+                FROM Users
+                WHERE Id = @Id";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (!await reader.ReadAsync())
+                        {
+                            return null;
+                        }
+
+                        return new User
+                        {
+                            Id = reader.GetInt32(0),
+                            Email = reader.GetString(1),
+                            PasswordHash = reader.GetString(2),
+                            FailedLoginAttempts = reader.GetInt32(3),
+                            LockoutUntil = reader.IsDBNull(4) ? null : reader.GetDateTime(4)
+                        };
+                    }
+                }
+            }
+        }
+
+        public async Task<List<string>> GetPermissionsByUserId(int userId)
+        {
+            List<string> permissions = new List<string>();
+
+            using (NpgsqlConnection connection = new NpgsqlConnection(_connectionString))
+            {
+                string query = @"
+                SELECT RolePermissions.Permission
+                FROM Users
+                JOIN Roles ON Roles.Id = Users.RoleId
+                JOIN RolePermissions ON RolePermissions.RoleId = Roles.Id
+                WHERE Users.Id = @UserId";
+
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", userId);
+
+                    await connection.OpenAsync();
+
+                    using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            permissions.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+
+            return permissions;
         }
     }
 }

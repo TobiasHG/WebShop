@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebShop.Models;
@@ -5,6 +6,7 @@ using WebShop.Services;
 
 namespace WebShop.Pages.Products
 {
+    [Authorize(Policy = Permissions.CanManipulateProducts)]
     public class AddModel : PageModel
     {
 

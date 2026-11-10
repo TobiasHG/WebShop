@@ -22,6 +22,7 @@ namespace WebShop.Services
             User newUser = new User
             {
                 Email = email,
+                RoleId = 1,
             };
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, password);
@@ -30,16 +31,14 @@ namespace WebShop.Services
 
             await _cartRepository.CreateCart(userId);
         }
-
-
         public async Task<User?> Login(string email, string password)
         {
             User? user = await _userRepository.GetByEmail(email);
 
             if (user == null)
             {
-                return null;
                 Console.WriteLine("User does not exist.");
+                return null;
             }
 
             if (user.LockoutUntil.HasValue && user.LockoutUntil > DateTime.UtcNow)
@@ -76,10 +75,37 @@ namespace WebShop.Services
 
             return user;
         }
-
         public async Task<User?> GetByEmail(string email)
         {
             return await _userRepository.GetByEmail(email);
+        }
+        public async Task UpdatePassword(int userId, string passwordHash)
+        {
+            await _userRepository.UpdatePassword(userId, passwordHash);
+        }
+
+        public async Task<List<string>> GetPermissionsByUserId(int userId)
+        {
+            return await _userRepository.GetPermissionsByUserId(userId);
+        }
+
+        public async Task<User?> GetById(int id)
+        {
+            return await _userRepository.GetById(id);
+
+        }
+        public async Task<bool> HasPermission(int userid, string permission)
+        {
+            User? user = await _userRepository.GetById(userid);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            List<string> permissions = await _userRepository.GetPermissionsByUserId(userid);
+
+            return permissions.Contains(permission);
         }
     }
 }

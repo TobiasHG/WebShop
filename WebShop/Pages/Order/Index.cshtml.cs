@@ -1,12 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-
-using WebShop.Services;
 using WebShop.Models;
+using WebShop.Services;
 
 namespace WebShop.Pages.Order
 {
+    [Authorize(Policy = Permissions.CanPlaceOrder)]
     public class IndexModel : PageModel
     {
 

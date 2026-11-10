@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using WebShop.Models;
 using WebShop.Services;
 
 namespace WebShop.Pages.Cart
 {
+    [Authorize(Policy = Permissions.CanPlaceOrder)]
     public class AddModel : PageModel
     {
 
@@ -14,7 +16,6 @@ namespace WebShop.Pages.Cart
         {
             _cartService = cartService;
         }
-
         public void OnGet()
         {
         }
@@ -26,7 +27,6 @@ namespace WebShop.Pages.Cart
         [BindProperty]
         public int Quantity { get; set; }
 
-        [Authorize]
         public async Task<IActionResult> OnPostAsync()
         {
 

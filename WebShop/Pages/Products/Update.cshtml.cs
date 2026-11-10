@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,6 +7,7 @@ using WebShop.Services;
 
 namespace WebShop.Pages.Products
 {
+    [Authorize(Policy = Permissions.CanManipulateProducts)]
     public class UpdateModel : PageModel
     {
         private readonly ProductService _productService;
